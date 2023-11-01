@@ -3,7 +3,7 @@ package br.com.acaboumony.util;
 import java.security.SecureRandom;
 import java.util.Random;
 
-public class securityUtil {
+public class SecurityUtil {
 
     private static final String ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     private static final int CONFIRMATION_CODE_SIZE = 20;

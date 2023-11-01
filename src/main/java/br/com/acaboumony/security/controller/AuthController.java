@@ -3,10 +3,7 @@ package br.com.acaboumony.security.controller;
 import br.com.acaboumony.security.service.MultiFactorAuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -19,6 +16,7 @@ public class AuthController {
     public AuthController(MultiFactorAuthService mFAService) {
         this.mFAService = mFAService;
     }
+
 
     public ResponseEntity<?> generateVerificationCode(@RequestHeader UUID userId){
 
@@ -36,7 +34,7 @@ public class AuthController {
         return ResponseEntity.ok().body(mFAService);
     }
 
-    @RequestMapping("/confirmation")
+    @PostMapping("/confirmation")
     public ResponseEntity<?> confirmAccount(@RequestParam String confirmationCode){
 
         return ResponseEntity.ok().body(mFAService);

@@ -1,6 +1,8 @@
 package br.com.acaboumony.security.service;
 
+import br.com.acaboumony.security.model.MultiFactorAuth;
 import br.com.acaboumony.security.repository.MultiFactorAuthRepository;
+import br.com.acaboumony.util.SecurityUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -19,8 +21,9 @@ public class MultiFactorAuthService {
         return null;
     }
 
-    public String generateConfirmationCode(String confirmationCode){
-
+    public String generateConfirmationCode(UUID userId){
+        String code = SecurityUtil.generateConfirmationCode();
+        MultiFactorAuth multiFactorAuth;
         return null;
     }
 

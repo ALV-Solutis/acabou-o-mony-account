@@ -5,6 +5,7 @@ import br.com.acaboumony.account.dto.response.UserResDTO;
 import br.com.acaboumony.account.model.User;
 import br.com.acaboumony.account.repository.UserRepository;
 import br.com.acaboumony.util.GenericMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,12 +17,14 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private GenericMapper <UserReqDTO, User> userReqMapper;
+    private final GenericMapper <UserReqDTO, User> userReqMapper;
 
-    private GenericMapper <UserResDTO, User> userResMapper;
+    private final GenericMapper <UserResDTO, User> userResMapper;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, GenericMapper<UserReqDTO, User> userReqMapper, GenericMapper<UserResDTO, User> userResMapper) {
         this.userRepository = userRepository;
+        this.userReqMapper = userReqMapper;
+        this.userResMapper = userResMapper;
     }
 
     public void createUser(UserReqDTO userReqDTO){
@@ -34,6 +37,12 @@ public class UserService {
 
     public void deleteUser(UUID userId){
         userRepository.deleteById(userId);
+    }
+
+    @Transactional
+    public void updateUser(UUID userId) {
+        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+
     }
 
     public UserResDTO detailUser(UUID userId){
