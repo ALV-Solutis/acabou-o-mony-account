@@ -1,0 +1,7 @@
+spring.rabbitmq.addresses=//endereço rabbit
+
+broker.queue.email.name.authentication=default.code2fa
+
+spring.application.name=acaboumony-account
+eureka.client.serviceUrl.defaultZone=http://localhost:8084/eureka
+eureka.instance.instance-id=${spring.application.name}:${random.int}
