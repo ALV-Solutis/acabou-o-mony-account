@@ -1,6 +1,7 @@
 package br.com.acaboumony.account.service;
 
 import br.com.acaboumony.account.dto.request.UserReqDTO;
+import br.com.acaboumony.account.dto.request.UserUpdateDTO;
 import br.com.acaboumony.account.dto.response.UserResDTO;
 import br.com.acaboumony.account.model.User;
 import br.com.acaboumony.account.repository.UserRepository;
@@ -40,9 +41,17 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(UUID userId) {
-        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
-
+    public void updateUser(UserUpdateDTO userUpdateDTO) {
+        User user = userRepository.findById(userUpdateDTO.userId()).orElseThrow(NoSuchElementException::new);
+        if (userUpdateDTO.name() != null) {
+            user.setName(userUpdateDTO.name());
+        }
+        if (userUpdateDTO.contact() != null) {
+            user.setContact(userUpdateDTO.contact());
+        }
+        if (userUpdateDTO.email() != null) {
+            user.setEmail(userUpdateDTO.email());
+        }
     }
 
     public UserResDTO detailUser(UUID userId){

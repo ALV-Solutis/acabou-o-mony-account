@@ -6,20 +6,23 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class MultiFactorAuth {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long authId;
+    private UUID authId;
 
     private UUID userId;
 
@@ -27,5 +30,12 @@ public class MultiFactorAuth {
 
     private Boolean isUsed;
 
-    private Timestamp creationDate;
+    private LocalDateTime creationDate;
+
+    public MultiFactorAuth(UUID userId, String code) {
+        this.userId = userId;
+        this.code = code;
+        this.isUsed = false;
+        this.creationDate = LocalDateTime.now();
+    }
 }

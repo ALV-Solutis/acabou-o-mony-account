@@ -24,7 +24,7 @@ public class SecurityUtil {
         return sb.toString();
     }
 
-    private String generateVerificationCode() {
+    public static String generateVerificationCode() {
         int a = new Random().nextInt(999999);
         return String.format("%06d", a);
     }

@@ -5,7 +5,9 @@ import br.com.acaboumony.account.service.UserService;
 import br.com.acaboumony.security.model.MultiFactorAuth;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SecurityProducer {
 
     private final RabbitTemplate rabbitTemplate;

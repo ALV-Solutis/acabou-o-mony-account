@@ -1,6 +1,7 @@
 package br.com.acaboumony.account.controller;
 
 import br.com.acaboumony.account.dto.request.UserReqDTO;
+import br.com.acaboumony.account.dto.request.UserUpdateDTO;
 import br.com.acaboumony.account.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser(UserReqDTO userReqDTO) {
+    public ResponseEntity<?> createUser(@RequestBody UserReqDTO userReqDTO) {
         userService.createUser(userReqDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("Usuário " + userReqDTO.name() + "criado!");
     }
@@ -34,5 +35,9 @@ public class UserController {
         return ResponseEntity.ok().body(userService.detailUser(userId));
     }
 
-
+    @PutMapping
+    public ResponseEntity<?> updateUser(@RequestBody UserUpdateDTO userUpdateDTO) {
+        userService.updateUser(userUpdateDTO);
+        return ResponseEntity.ok().body("Usuário atualizado!");
+    }
 }

@@ -1,5 +1,6 @@
 package br.com.acaboumony.security.controller;
 
+import br.com.acaboumony.security.dto.MultiFactorDTO;
 import br.com.acaboumony.security.service.MultiFactorAuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,26 +18,24 @@ public class AuthController {
         this.mFAService = mFAService;
     }
 
+//    public ResponseEntity<?> generateVerificationCode(@RequestHeader UUID userId){
+//
+//        return ResponseEntity.status(HttpStatus.CREATED).body(mFAService);
+//    }
 
-    public ResponseEntity<?> generateVerificationCode(@RequestHeader UUID userId){
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(mFAService);
-    }
-
-    @RequestMapping("/confirmation")
+    @PostMapping("/generate")
     public ResponseEntity<?> generateConfirmationCode(@RequestHeader UUID userId){
-
-        return ResponseEntity.ok().body(mFAService);
+        return ResponseEntity.ok().body(mFAService.generateVerificationCode(userId));
     }
 
-    public ResponseEntity<?> verifyCode(@RequestParam String verificationCode){
-
-        return ResponseEntity.ok().body(mFAService);
+    @GetMapping("/confirmation")
+    public ResponseEntity<?> verifyCode(@RequestBody MultiFactorDTO verificationCode){
+        return ResponseEntity.ok().body(mFAService.verifyVerificationCode(verificationCode));
     }
 
-    @PostMapping("/confirmation")
-    public ResponseEntity<?> confirmAccount(@RequestParam String confirmationCode){
-
-        return ResponseEntity.ok().body(mFAService);
-    }
+//    @PostMapping("/confirmation")
+//    public ResponseEntity<?> confirmAccount(@RequestParam String confirmationCode){
+//
+//        return ResponseEntity.ok().body(mFAService);
+//    }
 }
