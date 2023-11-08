@@ -26,15 +26,18 @@ public class MultiFactorAuth {
 
     private UUID userId;
 
+    private String email;
+
     private String code;
 
     private Boolean isUsed;
 
     private LocalDateTime creationDate;
 
-    public MultiFactorAuth(UUID userId, String code) {
+    public MultiFactorAuth(UUID userId, String code, String email) {
         this.userId = userId;
         this.code = code;
+        this.email = email;
         this.isUsed = false;
         this.creationDate = LocalDateTime.now();
     }

@@ -8,7 +8,6 @@ import br.com.acaboumony.account.repository.UserRepository;
 import br.com.acaboumony.util.GenericMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,17 +18,19 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final GenericMapper <UserResDTO, User> userResMapper;
+    private final GenericMapper <UserReqDTO, User> userReqMapper;
+    private final GenericMapper <User, UserResDTO> userResMapper;
 
-    public UserService(UserRepository userRepository, GenericMapper<UserResDTO, User> userResMapper) {
+    public UserService(UserRepository userRepository, GenericMapper<UserReqDTO, User> userReqMapper, GenericMapper<User, UserResDTO> userResMapper) {
         this.userRepository = userRepository;
+        this.userReqMapper = userReqMapper;
         this.userResMapper = userResMapper;
     }
 
     public void createUser(UserReqDTO userReqDTO){
         User user = new User();
         BeanUtils.copyProperties(userReqDTO, user);
-        userRepository.save(user);
+        userRepository.save(userReqMapper.mapDtoToModel(userReqDTO, User.class));
     }
 
     public List<UserResDTO> listUsers(){
@@ -56,11 +57,6 @@ public class UserService {
 
     public UserResDTO detailUser(UUID userId){
         User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
-        return new UserResDTO(user.getName(), user.getCpf(), user.getContact(), user.getEmail());
-    }
-
-    public String getEmailByUserId(UUID userId){
-        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
-        return user.getEmail();
+        return userResMapper.mapModelToDto(user, UserResDTO.class);
     }
 }

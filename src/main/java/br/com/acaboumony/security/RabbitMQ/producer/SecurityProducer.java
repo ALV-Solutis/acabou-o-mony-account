@@ -12,19 +12,16 @@ public class SecurityProducer {
 
     private final RabbitTemplate rabbitTemplate;
 
-    private final UserService userService;
 
-    public SecurityProducer(RabbitTemplate rabbitTemplate, UserService userService) {
+    public SecurityProducer(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
-        this.userService = userService;
     }
 
     @Value(value = "${broker.queue.email.name.authentication}")
     private String routingKey;
 
     public void publishMessageEmail(MultiFactorAuth mfa) {
-        String email = userService.getEmailByUserId(mfa.getUserId());
-        EmailDTO emailDto = new EmailDTO(mfa.getUserId(), email, mfa.getCode());
+        EmailDTO emailDto = new EmailDTO(mfa.getUserId(), mfa.getEmail(), mfa.getCode());
 
         rabbitTemplate.convertAndSend("", routingKey, emailDto);
     }

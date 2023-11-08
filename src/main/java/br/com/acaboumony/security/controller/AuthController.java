@@ -24,8 +24,8 @@ public class AuthController {
 //    }
 
     @PostMapping("/generate")
-    public ResponseEntity<?> generateConfirmationCode(@RequestHeader UUID userId){
-        return ResponseEntity.ok().body(mFAService.generateVerificationCode(userId));
+    public ResponseEntity<?> generateConfirmationCode(@RequestHeader UUID userId,@RequestHeader String email){
+        return ResponseEntity.ok().body(mFAService.generateVerificationCode(userId, email));
     }
 
     @GetMapping("/confirmation")

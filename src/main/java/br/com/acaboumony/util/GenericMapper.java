@@ -19,7 +19,7 @@ public class GenericMapper<S, T> {
         return this.modelMapper().map(dto, targetClass);
     }
 
-    public S mapModelToDto(T model, Class<S> targetClass) {
+    public T mapModelToDto(S model, Class<T> targetClass) {
         return this.modelMapper().map(model, targetClass);
     }
 

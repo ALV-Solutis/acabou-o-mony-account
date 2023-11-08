@@ -23,31 +23,27 @@ public class MultiFactorAuthService {
     }
 
     @Transactional
-    public String generateVerificationCode(UUID userId){
+    public String generateVerificationCode(UUID userId, String email){
         String code = SecurityUtil.generateVerificationCode();
-        MultiFactorAuth multiFactorAuth = new MultiFactorAuth(userId, code);
+        MultiFactorAuth multiFactorAuth = new MultiFactorAuth(userId, code, email);
         mFARepository.save(multiFactorAuth);
         securityProducer.publishMessageEmail(multiFactorAuth);
-        return "Código criado e enviado!";
+        return "Código enviado!";
     }
 
-    public String generateConfirmationCode(UUID userId){
-        return null;
-    }
-
-    public boolean verifyVerificationCode(MultiFactorDTO multiFactorDTO){
-        MultiFactorAuth multiFactorAuth = mFARepository.findByCode(multiFactorDTO.verificationCode()).orElseThrow(NoSuchElementException::new);
-        if (multiFactorDTO.userId().equals(multiFactorAuth.getUserId()) && !multiFactorAuth.getIsUsed()) {
-            multiFactorAuth.setIsUsed(true);
-            deleteVerificationCode(multiFactorAuth); //alterar
-            return true;
+    public String verifyVerificationCode(MultiFactorDTO multiFactorDTO){
+        try {
+            MultiFactorAuth multiFactorAuth = mFARepository.findByCode(multiFactorDTO.verificationCode()).orElseThrow(NoSuchElementException::new);
+            if (multiFactorDTO.userId().equals(multiFactorAuth.getUserId()) && !multiFactorAuth.getIsUsed()) {
+                multiFactorAuth.setIsUsed(true);
+                deleteVerificationCode(multiFactorAuth); //alterar para um processo automatizado fora da aplicação
+                return "Código verificado";
+            }
+            throw new RuntimeException();
         }
-        return false;
-    }
-
-    public String verifyConfirmationCode(String confirmationCode){
-
-        return null;
+        catch (RuntimeException e) {
+            return "Código de verificação não encontrado ou já utilizado!";
+        }
     }
 
     private void deleteVerificationCode(MultiFactorAuth multiFactorAuth) {
