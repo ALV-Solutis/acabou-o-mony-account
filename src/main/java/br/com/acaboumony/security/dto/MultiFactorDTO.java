@@ -5,6 +5,6 @@ import jakarta.validation.constraints.Size;
 
 import java.util.UUID;
 
-public record MultiFactorDTO(@Size(max = 6, min = 6) String verificatioCode,
+public record MultiFactorDTO(@Size(max = 6, min = 6) String verificationCode,
                              @NotNull UUID userId) {
 }

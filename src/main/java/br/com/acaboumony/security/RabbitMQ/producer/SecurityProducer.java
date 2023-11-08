@@ -19,7 +19,7 @@ public class SecurityProducer {
         this.userService = userService;
     }
 
-    @Value(value = "${broker.queue.email.name}")
+    @Value(value = "${broker.queue.email.name.authentication}")
     private String routingKey;
 
     public void publishMessageEmail(MultiFactorAuth mfa) {

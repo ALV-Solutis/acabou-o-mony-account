@@ -28,7 +28,7 @@ public class MultiFactorAuthService {
         MultiFactorAuth multiFactorAuth = new MultiFactorAuth(userId, code);
         mFARepository.save(multiFactorAuth);
         securityProducer.publishMessageEmail(multiFactorAuth);
-        return "Código criado";
+        return "Código criado e enviado!";
     }
 
     public String generateConfirmationCode(UUID userId){
@@ -36,7 +36,7 @@ public class MultiFactorAuthService {
     }
 
     public boolean verifyVerificationCode(MultiFactorDTO multiFactorDTO){
-        MultiFactorAuth multiFactorAuth = mFARepository.findByCode(multiFactorDTO.verificatioCode()).orElseThrow(NoSuchElementException::new);
+        MultiFactorAuth multiFactorAuth = mFARepository.findByCode(multiFactorDTO.verificationCode()).orElseThrow(NoSuchElementException::new);
         if (multiFactorDTO.userId().equals(multiFactorAuth.getUserId()) && !multiFactorAuth.getIsUsed()) {
             multiFactorAuth.setIsUsed(true);
             deleteVerificationCode(multiFactorAuth); //alterar
