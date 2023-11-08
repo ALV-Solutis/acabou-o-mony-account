@@ -1,5 +1,6 @@
 package br.com.acaboumony.account.service;
 
+import br.com.acaboumony.account.dto.request.UserLoginDTO;
 import br.com.acaboumony.account.dto.request.UserReqDTO;
 import br.com.acaboumony.account.dto.request.UserUpdateDTO;
 import br.com.acaboumony.account.dto.response.UserResDTO;
@@ -31,6 +32,11 @@ public class UserService {
         User user = new User();
         BeanUtils.copyProperties(userReqDTO, user);
         userRepository.save(userReqMapper.mapDtoToModel(userReqDTO, User.class));
+    }
+
+    public UUID login(String email, String password) {
+        User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
+        return user.getPassword().equals(password) ? user.getUserId() : null;
     }
 
     public List<UserResDTO> listUsers(){

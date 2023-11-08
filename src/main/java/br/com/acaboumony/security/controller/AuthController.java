@@ -28,9 +28,9 @@ public class AuthController {
         return ResponseEntity.ok().body(mFAService.generateVerificationCode(userId, email));
     }
 
-    @GetMapping("/confirmation")
-    public ResponseEntity<?> verifyCode(@RequestBody MultiFactorDTO verificationCode){
-        return ResponseEntity.ok().body(mFAService.verifyVerificationCode(verificationCode));
+    @PostMapping("/confirmation")
+    public ResponseEntity<?> verifyCode(@RequestHeader String code, @RequestHeader UUID userId){
+        return ResponseEntity.ok().body(mFAService.verifyVerificationCode(code, userId));
     }
 
 //    @PostMapping("/confirmation")

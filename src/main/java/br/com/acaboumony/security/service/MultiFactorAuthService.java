@@ -31,18 +31,19 @@ public class MultiFactorAuthService {
         return "Código enviado!";
     }
 
-    public String verifyVerificationCode(MultiFactorDTO multiFactorDTO){
+    public Boolean verifyVerificationCode(String code, UUID userId){
+        MultiFactorDTO multiFactorDTO = new MultiFactorDTO(code, userId);
         try {
             MultiFactorAuth multiFactorAuth = mFARepository.findByCode(multiFactorDTO.verificationCode()).orElseThrow(NoSuchElementException::new);
             if (multiFactorDTO.userId().equals(multiFactorAuth.getUserId()) && !multiFactorAuth.getIsUsed()) {
                 multiFactorAuth.setIsUsed(true);
                 deleteVerificationCode(multiFactorAuth); //alterar para um processo automatizado fora da aplicação
-                return "Código verificado";
+                return true;
             }
             throw new RuntimeException();
         }
         catch (RuntimeException e) {
-            return "Código de verificação não encontrado ou já utilizado!";
+            return false;
         }
     }
 
