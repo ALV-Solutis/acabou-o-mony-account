@@ -5,41 +5,47 @@ import br.com.acaboumony.account.dto.request.UserUpdateDTO;
 import br.com.acaboumony.account.dto.response.UserResDTO;
 import br.com.acaboumony.account.model.Users;
 import br.com.acaboumony.account.repository.UserRepository;
+import br.com.acaboumony.security.config.CustomAuthenticationFilterConfig;
+import br.com.acaboumony.security.config.SecConfig;
+import br.com.acaboumony.security.service.AuthService;
 import br.com.acaboumony.util.GenericMapper;
+import jakarta.servlet.ServletException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityExistsException;
-import javax.transaction.Transactional;
+import jakarta.persistence.EntityExistsException;
+import jakarta.transaction.Transactional;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final GenericMapper<UserReqDTO, Users> userReqMapper;
     private final GenericMapper<Users, UserResDTO> userResMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthService authService;
 
-    public UserService(UserRepository userRepository, GenericMapper<UserReqDTO, Users> userReqMapper, GenericMapper<Users, UserResDTO> userResMapper) {
-        this.userRepository = userRepository;
-        this.userReqMapper = userReqMapper;
-        this.userResMapper = userResMapper;
-    }
 
     public void createUser(UserReqDTO userReqDTO) {
         validateCpf(userReqDTO.getCpf());
         validateEmail(userReqDTO.getEmail());
 
+        userReqDTO.setPassword(passwordEncoder.encode(userReqDTO.getPassword()));
         Users users = new Users();
         BeanUtils.copyProperties(userReqDTO, users);
         userRepository.save(userReqMapper.mapDtoToModel(userReqDTO, Users.class));
     }
 
-    public UUID login(String email, String password) {
-        Users users = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
-        return users.getPassword().equals(password) ? users.getUserId() : null;
+    public String login(String email, String password) {
+        return authService.attemptAuthentication(email, password);
     }
 
     public List<UserResDTO> listUsers() {

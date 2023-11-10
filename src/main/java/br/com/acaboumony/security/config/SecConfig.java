@@ -1,6 +1,7 @@
 package br.com.acaboumony.security.config;
 
 import br.com.acabouomony.security.filter.SecurityFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,10 +21,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecConfig {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     private static final String[] AUTH_WHITELIST = {
             // -- Swagger UI v2
@@ -38,6 +39,8 @@ public class SecConfig {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/docs/**",
+            "/users/login",
+            "/users/register",
             "/login"
     };
 
@@ -49,7 +52,7 @@ public class SecConfig {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
                         authorizeRequests -> authorizeRequests
-                                .requestMatchers().permitAll()
+                                .requestMatchers(AUTH_WHITELIST).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
@@ -71,6 +74,4 @@ public class SecConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
         return authenticationConfiguration.getAuthenticationManager();
     }
-
-
 }

@@ -1,6 +1,5 @@
 package br.com.acaboumony.account.controller;
 
-import br.com.acaboumony.account.dto.request.UserLoginDTO;
 import br.com.acaboumony.account.dto.request.UserReqDTO;
 import br.com.acaboumony.account.dto.request.UserUpdateDTO;
 import br.com.acaboumony.account.service.UserService;
@@ -20,13 +19,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<?> createUser(@RequestBody UserReqDTO userReqDTO) {
         userService.createUser(userReqDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("Usuário " + userReqDTO.getName() + " criado!");
     }
 
-    @GetMapping("/verifylogin")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestHeader String email, @RequestHeader String password) {
         return ResponseEntity.ok().body(userService.login(email, password));
     }

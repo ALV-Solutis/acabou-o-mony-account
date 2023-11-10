@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -20,7 +20,7 @@ import java.util.Set;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
