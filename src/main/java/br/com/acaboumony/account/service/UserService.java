@@ -1,10 +1,9 @@
 package br.com.acaboumony.account.service;
 
-import br.com.acaboumony.account.dto.request.UserLoginDTO;
 import br.com.acaboumony.account.dto.request.UserReqDTO;
 import br.com.acaboumony.account.dto.request.UserUpdateDTO;
 import br.com.acaboumony.account.dto.response.UserResDTO;
-import br.com.acaboumony.account.model.User;
+import br.com.acaboumony.account.model.Users;
 import br.com.acaboumony.account.repository.UserRepository;
 import br.com.acaboumony.util.GenericMapper;
 import jakarta.persistence.EntityExistsException;
@@ -20,10 +19,10 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final GenericMapper<UserReqDTO, User> userReqMapper;
-    private final GenericMapper<User, UserResDTO> userResMapper;
+    private final GenericMapper<UserReqDTO, Users> userReqMapper;
+    private final GenericMapper<Users, UserResDTO> userResMapper;
 
-    public UserService(UserRepository userRepository, GenericMapper<UserReqDTO, User> userReqMapper, GenericMapper<User, UserResDTO> userResMapper) {
+    public UserService(UserRepository userRepository, GenericMapper<UserReqDTO, Users> userReqMapper, GenericMapper<Users, UserResDTO> userResMapper) {
         this.userRepository = userRepository;
         this.userReqMapper = userReqMapper;
         this.userResMapper = userResMapper;
@@ -33,14 +32,14 @@ public class UserService {
         validateCpf(userReqDTO.getCpf());
         validateEmail(userReqDTO.getEmail());
 
-        User user = new User();
-        BeanUtils.copyProperties(userReqDTO, user);
-        userRepository.save(userReqMapper.mapDtoToModel(userReqDTO, User.class));
+        Users users = new Users();
+        BeanUtils.copyProperties(userReqDTO, users);
+        userRepository.save(userReqMapper.mapDtoToModel(userReqDTO, Users.class));
     }
 
     public UUID login(String email, String password) {
-        User user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
-        return user.getPassword().equals(password) ? user.getUserId() : null;
+        Users users = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
+        return users.getPassword().equals(password) ? users.getUserId() : null;
     }
 
     public List<UserResDTO> listUsers() {
@@ -54,27 +53,27 @@ public class UserService {
     @Transactional
     public void updateUser(UserUpdateDTO userUpdateDTO) {
         validateEmail(userUpdateDTO.email());
-        User user = userRepository.findById(userUpdateDTO.userId()).orElseThrow(NoSuchElementException::new);
+        Users users = userRepository.findById(userUpdateDTO.userId()).orElseThrow(NoSuchElementException::new);
 
         if (userUpdateDTO.name() != null) {
-            user.setName(userUpdateDTO.name());
+            users.setName(userUpdateDTO.name());
         }
         if (userUpdateDTO.contact() != null) {
-            user.setContact(userUpdateDTO.contact());
+            users.setContact(userUpdateDTO.contact());
         }
         if (userUpdateDTO.email() != null) {
-            user.setEmail(userUpdateDTO.email());
+            users.setEmail(userUpdateDTO.email());
         }
 
     }
 
     public UserResDTO detailUser(UUID userId) {
-        User user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
-        return userResMapper.mapModelToDto(user, UserResDTO.class);
+        Users users = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+        return userResMapper.mapModelToDto(users, UserResDTO.class);
     }
 
-    private void validateLogin(String password, User user){
-        if(!user.getPassword().equals(password)){
+    private void validateLogin(String password, Users users){
+        if(!users.getPassword().equals(password)){
 
         }
     }
