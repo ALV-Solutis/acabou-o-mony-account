@@ -1,6 +1,6 @@
 package br.com.acaboumony.account.dto.request;
 
-import jakarta.validation.constraints.NotNull;
+import javax.validation.constraints.NotNull;
 
 import java.util.UUID;
 

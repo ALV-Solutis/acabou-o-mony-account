@@ -5,9 +5,9 @@ import br.com.acaboumony.security.dto.MultiFactorDTO;
 import br.com.acaboumony.security.model.MultiFactorAuth;
 import br.com.acaboumony.security.repository.MultiFactorAuthRepository;
 import br.com.acaboumony.util.SecurityUtil;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 

@@ -6,11 +6,11 @@ import br.com.acaboumony.account.dto.response.UserResDTO;
 import br.com.acaboumony.account.model.Users;
 import br.com.acaboumony.account.repository.UserRepository;
 import br.com.acaboumony.util.GenericMapper;
-import jakarta.persistence.EntityExistsException;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityExistsException;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
