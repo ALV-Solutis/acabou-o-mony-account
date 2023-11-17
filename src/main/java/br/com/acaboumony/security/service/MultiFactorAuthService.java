@@ -1,5 +1,6 @@
 package br.com.acaboumony.security.service;
 
+import br.com.acaboumony.account.model.UserAuth;
 import br.com.acaboumony.account.service.UserService;
 import br.com.acaboumony.security.RabbitMQ.producer.SecurityProducer;
 import br.com.acaboumony.security.dto.MultiFactorDTO;
@@ -30,10 +31,11 @@ public class MultiFactorAuthService {
     }
 
     @Transactional
-    public String generateVerificationCode(UUID userId, String email, String otpCode){
+    public String generateVerificationCode(String email, String otpCode){
         if (userService.validateOTP(otpCode)){
             String code = SecurityUtil.generateVerificationCode();
-            MultiFactorAuth multiFactorAuth = new MultiFactorAuth(userId, code, email);
+            UserAuth userAuth = userService.getOtpEntity(otpCode);
+            MultiFactorAuth multiFactorAuth = new MultiFactorAuth(userAuth.getUserId(), code, email);
             mFARepository.save(multiFactorAuth);
             securityProducer.publishMessageEmail(multiFactorAuth);
             return "Código enviado!";
@@ -43,15 +45,16 @@ public class MultiFactorAuthService {
 
     }
 
-    public Token verifyVerificationCode(String code, UUID userId, String otpCode){
+    public Token verifyVerificationCode(String code, String otpCode){
         if (userService.validateOTP(otpCode)) {
-            MultiFactorDTO multiFactorDTO = new MultiFactorDTO(code, userId);
+            UserAuth userAuth = userService.getOtpEntity(otpCode);
+            MultiFactorDTO multiFactorDTO = new MultiFactorDTO(code, userAuth.getUserId());
             try {
                 MultiFactorAuth multiFactorAuth = mFARepository.findByCode(multiFactorDTO.verificationCode()).orElseThrow(NoSuchElementException::new);
                 if (multiFactorDTO.userId().equals(multiFactorAuth.getUserId()) && !multiFactorAuth.getIsUsed()) {
                     multiFactorAuth.setIsUsed(true);
                     deleteVerificationCode(multiFactorAuth); //alterar para um processo automatizado fora da aplicação
-                    return new Token(authService.doAuthentication(userId));
+                    return new Token(authService.doAuthentication(userAuth.getUserId()));
                 }else {
                     throw new RuntimeException();
                 }

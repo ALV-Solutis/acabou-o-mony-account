@@ -1,6 +1,8 @@
 package br.com.acaboumony.security.service;
 
+import br.com.acaboumony.account.model.UserAuth;
 import br.com.acaboumony.account.model.Users;
+import br.com.acaboumony.account.repository.UserAuthRepository;
 import br.com.acaboumony.account.repository.UserRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -18,6 +20,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserAuthRepository authRepository;
 
     public String attemptAuthentication(String email, String senha) {
         Users user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
@@ -36,6 +39,9 @@ public class AuthService {
         String token = "";
         try {
             token = successfulAuthentication(user);
+            UserAuth userAuth = authRepository.findUserAuthByUserIdAndIsUsedIsFalse(userId);
+            userAuth.setIsUsed(true);
+            authRepository.save(userAuth);
         }
         catch (Exception e) {
             e.printStackTrace();

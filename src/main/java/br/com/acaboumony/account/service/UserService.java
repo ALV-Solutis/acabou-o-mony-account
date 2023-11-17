@@ -123,4 +123,8 @@ public class UserService {
 
         return userAuthRepository.findUserAuthByOtpCodeAndIsUsedIsFalse(otpCode) != null;
     }
+
+    public UserAuth getOtpEntity(String otpCode) {
+        return userAuthRepository.findUserAuthByOtpCodeAndIsUsedIsFalse(otpCode);
+    }
 }

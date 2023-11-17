@@ -41,7 +41,9 @@ public class SecConfig {
             "/docs/**",
             "/users/login",
             "/users/register",
-            "/login"
+            "/login",
+            "/auth/**",
+
     };
 
     @Bean
