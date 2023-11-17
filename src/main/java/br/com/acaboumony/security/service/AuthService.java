@@ -10,10 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +29,18 @@ public class AuthService {
             e.printStackTrace();
         }
         return passwordEncoder.matches(senha, user.getPassword()) ? token : "Não autorizado";
+    }
+
+    public String doAuthentication(UUID userId) {
+        Users user = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
+        String token = "";
+        try {
+            token = successfulAuthentication(user);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return token;
     }
 
     protected String successfulAuthentication(Users users) throws IOException, ServletException {

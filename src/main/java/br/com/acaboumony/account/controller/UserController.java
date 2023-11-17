@@ -30,6 +30,11 @@ public class UserController {
         return ResponseEntity.ok().body(userService.login(email, password));
     }
 
+    @PostMapping("/verify2FA")
+    public ResponseEntity<?> verify2FA(@RequestHeader String email, @RequestHeader String password) {
+        return ResponseEntity.ok().body(userService);
+    }
+
     @GetMapping
     public ResponseEntity<?> listUsers() {
         return ResponseEntity.ok().body(userService.listUsers());

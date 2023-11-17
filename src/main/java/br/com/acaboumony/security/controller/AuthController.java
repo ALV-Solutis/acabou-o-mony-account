@@ -24,13 +24,13 @@ public class AuthController {
 //    }
 
     @PostMapping("/generate")
-    public ResponseEntity<?> generateConfirmationCode(@RequestHeader UUID userId,@RequestHeader String email){
-        return ResponseEntity.ok().body(mFAService.generateVerificationCode(userId, email));
+    public ResponseEntity<?> generateConfirmationCode(@RequestHeader UUID userId,@RequestHeader String email, @RequestHeader String otpCode){
+        return ResponseEntity.ok().body(mFAService.generateVerificationCode(userId, email, otpCode));
     }
 
     @PostMapping("/confirmation")
-    public ResponseEntity<?> verifyCode(@RequestHeader String code, @RequestHeader UUID userId){
-        return ResponseEntity.ok().body(mFAService.verifyVerificationCode(code, userId));
+    public ResponseEntity<?> verifyCode(@RequestHeader String code, @RequestHeader UUID userId, @RequestHeader String otpCode){
+        return ResponseEntity.ok().body(mFAService.verifyVerificationCode(code, userId, otpCode));
     }
 
 //    @PostMapping("/confirmation")

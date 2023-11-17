@@ -3,13 +3,17 @@ package br.com.acaboumony.account.service;
 import br.com.acaboumony.account.dto.request.UserReqDTO;
 import br.com.acaboumony.account.dto.request.UserUpdateDTO;
 import br.com.acaboumony.account.dto.response.UserResDTO;
+import br.com.acaboumony.account.model.UserAuth;
 import br.com.acaboumony.account.model.Users;
+import br.com.acaboumony.account.repository.UserAuthRepository;
 import br.com.acaboumony.account.repository.UserRepository;
 import br.com.acaboumony.security.config.CustomAuthenticationFilterConfig;
 import br.com.acaboumony.security.config.SecConfig;
 import br.com.acaboumony.security.service.AuthService;
 import br.com.acaboumony.util.GenericMapper;
+import br.com.acaboumony.util.SecurityUtil;
 import jakarta.servlet.ServletException;
+import jakarta.ws.rs.NotAuthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,7 +35,7 @@ public class UserService {
     private final GenericMapper<UserReqDTO, Users> userReqMapper;
     private final GenericMapper<Users, UserResDTO> userResMapper;
     private final PasswordEncoder passwordEncoder;
-    private final AuthService authService;
+    private final UserAuthRepository userAuthRepository;
 
 
     public void createUser(UserReqDTO userReqDTO) {
@@ -45,7 +49,13 @@ public class UserService {
     }
 
     public String login(String email, String password) {
-        return authService.attemptAuthentication(email, password);
+        Users user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
+
+        if (passwordEncoder.matches(password,user.getPassword())){
+            return generateOTP(user.getUserId());
+        }else {
+            throw new NotAuthorizedException("Usuario ou senha inválidos");
+        }
     }
 
     public List<UserResDTO> listUsers() {
@@ -78,12 +88,6 @@ public class UserService {
         return userResMapper.mapModelToDto(users, UserResDTO.class);
     }
 
-    private void validateLogin(String password, Users users){
-        if(!users.getPassword().equals(password)){
-
-        }
-    }
-
     private void validateEmail(String email) {
         List<String> emailsSaved = userRepository.findEmails();
 
@@ -100,5 +104,23 @@ public class UserService {
                 throw new EntityExistsException("Cpf Já está em uso");
             }});
 
+    }
+
+    private String generateOTP(UUID userId){
+        UserAuth userAuth = userAuthRepository.findUserAuthByUserIdAndIsUsedIsFalse(userId);
+        String otpCode;
+        if(userAuth != null){
+            otpCode = userAuth.getOtpCode();
+        }else {
+            otpCode = SecurityUtil.generateOtpCode();
+            userAuthRepository.save(new UserAuth(userId,otpCode,false));
+        }
+
+        return otpCode;
+    }
+
+    public Boolean validateOTP(String otpCode){
+
+        return userAuthRepository.findUserAuthByOtpCodeAndIsUsedIsFalse(otpCode) != null;
     }
 }
