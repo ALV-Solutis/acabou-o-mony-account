@@ -3,6 +3,7 @@ package br.com.acaboumony.account.controller;
 import br.com.acaboumony.account.dto.request.UserReqDTO;
 import br.com.acaboumony.account.dto.request.UserUpdateDTO;
 import br.com.acaboumony.account.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,21 +31,19 @@ public class UserController {
         return ResponseEntity.ok().body(userService.login(email, password));
     }
 
-    @PostMapping("/verify2FA")
-    public ResponseEntity<?> verify2FA(@RequestHeader String email, @RequestHeader String password) {
-        return ResponseEntity.ok().body(userService);
-    }
-
+    @SecurityRequirement(name = "bearer-key")
     @GetMapping
     public ResponseEntity<?> listUsers() {
         return ResponseEntity.ok().body(userService.listUsers());
     }
 
+    @SecurityRequirement(name = "bearer-key")
     @GetMapping("/detail")
     public ResponseEntity<?> detailUser(@RequestHeader UUID userId) {
         return ResponseEntity.ok().body(userService.detailUser(userId));
     }
 
+    @SecurityRequirement(name = "bearer-key")
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateDTO userUpdateDTO) {
         userService.updateUser(userUpdateDTO);
