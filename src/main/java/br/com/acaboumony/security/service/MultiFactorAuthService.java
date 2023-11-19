@@ -8,12 +8,11 @@ import br.com.acaboumony.security.dto.Token;
 import br.com.acaboumony.security.model.MultiFactorAuth;
 import br.com.acaboumony.security.repository.MultiFactorAuthRepository;
 import br.com.acaboumony.util.SecurityUtil;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotAuthorizedException;
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 @Service
 public class MultiFactorAuthService {

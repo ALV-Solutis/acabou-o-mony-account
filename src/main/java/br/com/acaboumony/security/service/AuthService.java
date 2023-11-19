@@ -6,12 +6,10 @@ import br.com.acaboumony.account.repository.UserAuthRepository;
 import br.com.acaboumony.account.repository.UserRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import jakarta.servlet.ServletException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -49,7 +47,7 @@ public class AuthService {
         return token;
     }
 
-    protected String successfulAuthentication(Users users) throws IOException, ServletException {
+    protected String successfulAuthentication(Users users) {
         Algorithm algorithm = Algorithm.HMAC256("ALV-squad2-Solutis".getBytes());
 
         String accessToken = JWT.create()

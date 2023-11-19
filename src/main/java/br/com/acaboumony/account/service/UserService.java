@@ -7,22 +7,16 @@ import br.com.acaboumony.account.model.UserAuth;
 import br.com.acaboumony.account.model.Users;
 import br.com.acaboumony.account.repository.UserAuthRepository;
 import br.com.acaboumony.account.repository.UserRepository;
-import br.com.acaboumony.security.config.CustomAuthenticationFilterConfig;
-import br.com.acaboumony.security.config.SecConfig;
-import br.com.acaboumony.security.service.AuthService;
 import br.com.acaboumony.util.GenericMapper;
 import br.com.acaboumony.util.SecurityUtil;
-import jakarta.servlet.ServletException;
+import jakarta.persistence.EntityExistsException;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotAuthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import jakarta.persistence.EntityExistsException;
-import jakarta.transaction.Transactional;
-
-import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -91,7 +85,7 @@ public class UserService {
     private void validateEmail(String email) {
         List<String> emailsSaved = userRepository.findEmails();
 
-        emailsSaved.stream().forEach(existingEMail ->{
+        emailsSaved.forEach(existingEMail ->{
             if (existingEMail.equals(email) ) {
                 throw new EntityExistsException("Email ja está em uso");
             }});
@@ -99,7 +93,7 @@ public class UserService {
     private void validateCpf(String cpf){
         List<String> cpfsSaved = userRepository.findCpfs();
 
-        cpfsSaved.stream().forEach(existingCpf ->{
+        cpfsSaved.forEach(existingCpf ->{
             if (existingCpf.equals(cpf)) {
                 throw new EntityExistsException("Cpf Já está em uso");
             }});

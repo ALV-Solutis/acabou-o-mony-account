@@ -1,7 +1,6 @@
 package br.com.acaboumony.security.RabbitMQ.producer;
 
 import br.com.acaboumony.account.dto.response.EmailDTO;
-import br.com.acaboumony.account.service.UserService;
 import br.com.acaboumony.security.model.MultiFactorAuth;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
