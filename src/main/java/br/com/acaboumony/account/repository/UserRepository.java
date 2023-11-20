@@ -1,6 +1,8 @@
 package br.com.acaboumony.account.repository;
 
 import br.com.acaboumony.account.model.Users;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,4 +20,6 @@ public interface UserRepository extends JpaRepository<Users, UUID> {
     List<String> findEmails();
     @Query("SELECT u.cpf FROM Users u")
     List<String> findCpfs();
+
+    Page<Users> findAll(Pageable pageable);
 }

@@ -3,6 +3,7 @@ package br.com.acaboumony.util;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,10 +31,8 @@ public class GenericMapper<S, T> {
                 .collect(Collectors.toList());
     }
 
-    public <S, T> List<S> listToList(List<T> source, Class<S> targetClass) {
+    public <S, T> Page<S> listToList(Page<T> source, Class<S> targetClass) {
         return source
-                .stream()
-                .map(element -> this.modelMapper().map(element, targetClass))
-                .collect(Collectors.toList());
+                .map(element -> this.modelMapper().map(element, targetClass));
     }
 }

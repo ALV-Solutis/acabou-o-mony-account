@@ -14,6 +14,8 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotAuthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -52,8 +54,8 @@ public class UserService {
         }
     }
 
-    public List<UserResDTO> listUsers() {
-        return userResMapper.listToList(userRepository.findAll(), UserResDTO.class);
+    public Page<UserResDTO> listUsers(Pageable pageable) {
+        return userResMapper.listToList(userRepository.findAll(pageable), UserResDTO.class);
     }
 
     public void deleteUser(UUID userId) {

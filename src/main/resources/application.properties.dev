@@ -1,9 +1,15 @@
+server.port=0
+
 spring.datasource.url=jdbc:postgresql://localhost:5432/acabouomony-account
 spring.datasource.username=postgres
 spring.datasource.password=//senha do banco
 spring.jpa.hibernate.ddl-auto=update
 
-spring.rabbitmq.addresses=//endereço rabbit
+spring.main.allow-bean-definition-overriding=true
+spring.main.allow-circular-references= true
+
+
+spring.rabbitmq.addresses=//adress do rabbit
 
 broker.queue.email.name.authentication=default.code2fa
 
