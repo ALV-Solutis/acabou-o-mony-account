@@ -96,7 +96,7 @@ public class UserController {
     }
 
     @Operation(
-            summary = "Atualiza os dados de um usuário pelo id",
+            summary = "Atualizar dados de um usuário pelo id",
             description = "Atualiza o nome, contato ou email do usuário que foi fornecido o id."
     )
     @ApiResponses({
@@ -111,5 +111,23 @@ public class UserController {
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateDTO userUpdateDTO) {
         userService.updateUser(userUpdateDTO);
         return ResponseEntity.ok().body("Usuário atualizado!");
+    }
+
+    @Operation(
+            summary = "Deletar um usuário pelo id",
+            description = "Deleta um usuário de acordo com id informado no cabeçalho. A resposta é um HTTP 204."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", content = {@Content(schema = @Schema)}, description = "No Content"),
+            @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema)}, description = "Bad Request"),
+            @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema)}, description = "Not Found"),
+            @ApiResponse(responseCode = "406", content = {@Content(schema = @Schema)}, description = "Not Acceptable"),
+            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema) }, description = "Internal Server Error")
+    })
+    @DeleteMapping
+    @SecurityRequirement(name = "bearer-key")
+    public ResponseEntity<?> deleteUser(@RequestHeader UUID userId) {
+        userService.deleteUser(userId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
