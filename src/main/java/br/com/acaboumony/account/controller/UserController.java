@@ -2,6 +2,7 @@ package br.com.acaboumony.account.controller;
 
 import br.com.acaboumony.account.dto.request.UserReqDTO;
 import br.com.acaboumony.account.dto.request.UserUpdateDTO;
+import br.com.acaboumony.account.dto.response.UserResDTO;
 import br.com.acaboumony.account.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,14 +30,14 @@ public class UserController {
 
     @Operation(
             summary = "Criar um novo usuário",
-            description = "Cria um novo usuário verificando se o CPF e email não estão sendo utilizados."
+            description = "Cria um novo usuário verificando se o CPF e email não estão sendo utilizados.",
+            method = "POST"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", content = {@Content(schema = @Schema(description = "string"), mediaType = "application/json")}),
-            @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema())}),
-            @ApiResponse(responseCode = "404"),
-            @ApiResponse(responseCode = "406", content = {@Content(schema = @Schema())}),
-            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
+            @ApiResponse(responseCode = "201", content = {@Content(schema = @Schema(defaultValue = "Usuário teste criado com sucesso"))}),
+            @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema)}, description = "Bad Request"),
+            @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema)}, description = "Not Found"),
+            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema) }, description = "Internal Server Error")})
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@RequestBody UserReqDTO userReqDTO) {
         userService.createUser(userReqDTO);
@@ -48,7 +49,7 @@ public class UserController {
             description = "Realiza o login caso as credenciais informadas estejam corretas. A resposta é um código OTP, vinculado ao email, gerado para realizar a autenticação de 2 fatores."
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(description = "0000-0000-0000-0000-0000"))}),
+            @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(defaultValue = "0000-0000-0000-0000-0000"))}),
             @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema)}, description = "Bad Request"),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema)}, description = "Not Found"),
             @ApiResponse(responseCode = "406", content = {@Content(schema = @Schema)}, description = "Not Acceptable"),
@@ -62,6 +63,13 @@ public class UserController {
             summary = "Listar todos os usuários",
             description = "Faz uma listagem completa dos usuários do banco."
     )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = UserResDTO.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema)}, description = "Bad Request"),
+            @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema)}, description = "Not Found"),
+            @ApiResponse(responseCode = "406", content = {@Content(schema = @Schema)}, description = "Not Acceptable"),
+            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema) }, description = "Internal Server Error")
+    })
     @GetMapping
     @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<?> listUsers() {
@@ -72,6 +80,13 @@ public class UserController {
             summary = "Detalhar os dados de um usuário pelo id",
             description = "Detalha os dados não sensiveis do usuário de acordo com o id informado."
     )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = UserResDTO.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema)}, description = "Bad Request"),
+            @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema)}, description = "Not Found"),
+            @ApiResponse(responseCode = "406", content = {@Content(schema = @Schema)}, description = "Not Acceptable"),
+            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema) }, description = "Internal Server Error")
+    })
     @GetMapping("/detail")
     @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<?> detailUser(@RequestHeader UUID userId) {
@@ -82,6 +97,13 @@ public class UserController {
             summary = "Atualiza os dados de um usuário pelo id",
             description = "Atualiza o nome, contato ou email do usuário que foi fornecido o id."
     )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(description = "string"))}),
+            @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema)}, description = "Bad Request"),
+            @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema)}, description = "Not Found"),
+            @ApiResponse(responseCode = "406", content = {@Content(schema = @Schema)}, description = "Not Acceptable"),
+            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema) }, description = "Internal Server Error")
+    })
     @PutMapping
     @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateDTO userUpdateDTO) {
