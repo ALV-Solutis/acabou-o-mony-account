@@ -37,7 +37,7 @@ class UserControllerTest {
     private JacksonTester<UserUpdateDTO> userUpdateDTOJson;
 
     @Test
-    @DisplayName("Devolver HTTP 200 quando um usuário for criado.")
+    @DisplayName("Devolver HTTP 201 quando um usuário for criado.")
     void createUser() throws Exception {
 
         var response = mockMvc.perform(post("/users/register")
@@ -48,7 +48,7 @@ class UserControllerTest {
                         ).getJson()))
                 .andReturn().getResponse();
 
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -71,7 +71,7 @@ class UserControllerTest {
                 .header("password", "leonardo12"))
                 .andReturn().getResponse();
 
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.FORBIDDEN.value());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @Test

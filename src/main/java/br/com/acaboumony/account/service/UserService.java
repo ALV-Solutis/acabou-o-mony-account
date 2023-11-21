@@ -33,7 +33,10 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserAuthRepository userAuthRepository;
 
-
+    /**
+     * Método utilizado para criar um usuário, realizando a verificação se existe email ou cpf igual no banco de dados.
+     * @param userReqDTO Dados enviados na requisição
+     */
     public void createUser(UserReqDTO userReqDTO) {
         validateCpf(userReqDTO.getCpf());
         validateEmail(userReqDTO.getEmail());
@@ -44,6 +47,12 @@ public class UserService {
         userRepository.save(userReqMapper.mapDtoToModel(userReqDTO, Users.class));
     }
 
+    /**
+     * Método utilizado para realizar login, verificando o email e senha criptografada.
+     * @param email Email do usuário
+     * @param password Senha do usuário
+     * @return Retorna um código OTP de 20 digitos para ser usado na autenticação de 2 fatores
+     */
     public String login(String email, String password) {
         Users user = userRepository.findByEmail(email).orElseThrow(NoSuchElementException::new);
 
@@ -54,14 +63,27 @@ public class UserService {
         }
     }
 
+    /**
+     * Método para listar todos os usuários, de acordo com a paginação informada
+     * @param pageable Paginação da requisição (size e page)
+     * @return Retorna um page com todos os usuários páginados
+     */
     public Page<UserResDTO> listUsers(Pageable pageable) {
         return userResMapper.listToList(userRepository.findAll(pageable), UserResDTO.class);
     }
 
+    /**
+     * Método utilizado para remover usuário do banco de dados
+     * @param userId Id do usuário a ser removido
+     */
     public void deleteUser(UUID userId) {
         userRepository.deleteById(userId);
     }
 
+    /**
+     * Método utilizado para atualizar um usuário da base de dados. Só é possivel alterar o email, contato e nome.
+     * @param userUpdateDTO Dados da requisição de atualização
+     */
     @Transactional
     public void updateUser(UserUpdateDTO userUpdateDTO) {
         validateEmail(userUpdateDTO.email());
@@ -79,11 +101,20 @@ public class UserService {
 
     }
 
+    /**
+     * Método utilizado para detalhar o usuário de acordo com o id informado.
+     * @param userId Id do usuário
+     * @return Dados não sensiveis do usuário de acordo com o id informado
+     */
     public UserResDTO detailUser(UUID userId) {
         Users users = userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
         return userResMapper.mapModelToDto(users, UserResDTO.class);
     }
 
+    /**
+     * Método utilizado para validar o email, retornando uma exceção caso o email esteja em uso
+     * @param email Email fornecido pela requisição
+     */
     private void validateEmail(String email) {
         List<String> emailsSaved = userRepository.findEmails();
 
@@ -92,6 +123,11 @@ public class UserService {
                 throw new EntityExistsException("Email ja está em uso");
             }});
     }
+
+    /**
+     * Método utilizado para validar o cpf, retornando uma exceção caso o cpf esteja em uso
+     * @param cpf CPF fornecido pela requisição
+     */
     private void validateCpf(String cpf){
         List<String> cpfsSaved = userRepository.findCpfs();
 
@@ -102,6 +138,11 @@ public class UserService {
 
     }
 
+    /**
+     * Método utilizado para gerar o código OTP
+     * @param userId Id do usuário
+     * @return Retorna uma string, um código de 20 digitos, para realizar autenticação de 2 fatores
+     */
     private String generateOTP(UUID userId){
         UserAuth userAuth = userAuthRepository.findUserAuthByUserIdAndIsUsedIsFalse(userId);
         String otpCode;
